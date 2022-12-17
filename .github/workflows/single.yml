@@ -36,13 +36,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
+    # we use the exact restore key to avoid Cypress binary snowballing
+    # https://glebbahmutov.com/blog/do-not-let-cypress-cache-snowball/
     - name: Cache Cypress binary
       uses: actions/cache@v3
       with:
         path: ~/.cache/Cypress
-        key: cypress-${{ runner.os }}-cypress-${{ hashFiles('**/package.json') }}
+        key: cypress-${{ runner.os }}-cypress-${{ github.ref }}-${{ hashFiles('**/package.json') }}
         restore-keys: |
-          cypress-${{ runner.os }}-cypress-
+          cypress-${{ runner.os }}-cypress-${{ github.ref }}-${{ hashFiles('**/package.json') }}
 
     - name: install dependencies and verify Cypress
       env:
